@@ -26,7 +26,7 @@ function ProductList({
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [categoriesArray, setCategoriesArray] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState("");
 
   useEffect(() => {
     dispatch(fetchCategories());

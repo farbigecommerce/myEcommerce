@@ -49,3 +49,49 @@ export const addToCart = (product_variation, quantity) => async (dispatch) => {
     });
   }
 };
+
+
+// Action to update a cart item
+export const updateCartItem = (itemId, updateData) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("access")}`,
+    },
+  };
+
+  try {
+    const res = await axios.patch(`${API_DOMAIN}/cart/update/${itemId}/`, updateData, config);
+    dispatch({
+      type: TYPE.UPDATE_CART_ITEM_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPE.UPDATE_CART_ITEM_FAIL,
+      payload: err.response.data,
+    });
+  }
+};
+
+// Action to remove an item from the cart
+export const removeFromCart = (itemId) => async (dispatch) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("access")}`,
+    },
+  };
+
+  try {
+    await axios.delete(`${API_DOMAIN}/cart/delete/${itemId}/`, config);
+    dispatch({
+      type: TYPE.REMOVE_FROM_CART_SUCCESS,
+      payload: itemId,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPE.REMOVE_FROM_CART_FAIL,
+      payload: err.response.data,
+    });
+  }
+};

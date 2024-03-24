@@ -74,3 +74,4 @@ export const productDetail = (product_id) => async (dispatch) => {
     });
   }
 };
+

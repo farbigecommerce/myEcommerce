@@ -61,6 +61,8 @@ class AddCartItem(APIView):
                 return Response({'error': 'Product is not available'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 self.update_quantity(cart_item, new_quantity)
+                cart_item.is_deleted = False
+                cart_item.save()
                 serializer = CartItemSerializer(cart_item)
                 cart_items = CartItem.objects.filter(cart__user=request.user, is_deleted=False)
                 serializer = CartItemListSerializer(cart_items, many=True)
@@ -166,5 +168,6 @@ class DeleteCartItem(APIView):
             return Response({'error': 'Cart item is already deleted'}, status=status.HTTP_400_BAD_REQUEST)
 
         cart_item.is_deleted = True
+        cart_item.quantity = 0
         cart_item.save()
         return Response({'success': 'Cart item deleted'},status=status.HTTP_204_NO_CONTENT)

@@ -6,6 +6,7 @@ const initialState = {
   next: null,
   previous: null,
   categories: [],
+  product_detail: null,
 };
 
 const ProdReducer = (state = initialState, action) => {
@@ -35,6 +36,18 @@ const ProdReducer = (state = initialState, action) => {
       return {
         ...state,
         categories: payload,
+        type: "error",
+      };
+      case TYPE.PRODUCT_DETAIL_SUCCESS:
+      return {
+        ...state,
+        product_detail: payload,
+        type: "success",
+      };
+    case TYPE.CATEGORY_LIST_FAIL:
+      return {
+        ...state,
+        product_detail: payload,
         type: "error",
       };
     default:

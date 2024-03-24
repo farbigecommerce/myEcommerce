@@ -28,19 +28,15 @@ function ProductList({
   const [categoriesArray, setCategoriesArray] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const isXs = window.innerWidth <= 900;
-
-  const formatCurrency = (number) => {
-    // Function to format numbers as currency with commas and decimals
-    return new Intl.NumberFormat("es-AR", {
-      style: "currency",
-      currency: "ARS", // Replace with your desired currency code
-    }).format(number);
-  };
-
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (selectedProduct === null) {
+      dispatch(productList(currentPage, searchText, categoriesArray));
+    }
+  }, [selectedProduct]);
 
   useEffect(() => {
     dispatch(productList(currentPage, searchText, categoriesArray));
@@ -82,21 +78,25 @@ function ProductList({
 
   return (
     <>
-      <Grid container sx={{pt:{xs:7,sm:8,md:9,}}} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-
-          <Grid item lg={2} xs={3} sx={{display:{xs:"none",md:"block"}}}>
-            <Box sx={{ m: 1 }} noValidate autoComplete="off">
-              <Typography sx={{ ml: 1, my: 1 }} variant="h5">
-                Filtros
-              </Typography>
-              <SearchBar onSearchChange={handleSearchChange} />
-              <CategoryCheckboxList
-                key={1}
-                categoryListArray={categories}
-                onSelectedCategoriesChange={handleSelectedCategoriesChange}
-              />
-            </Box>
-          </Grid>
+      <Grid
+        container
+        sx={{ pt: { xs: 7, sm: 8, md: 9 } }}
+        rowSpacing={1}
+        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+      >
+        <Grid item lg={3} xs={3} sx={{ display: { xs: "none", md: "block" } }}>
+          <Box sx={{ m: 1 }} noValidate autoComplete="off">
+            <Typography sx={{ ml: 1, my: 1 }} variant="h5">
+              Filtros
+            </Typography>
+            <SearchBar onSearchChange={handleSearchChange} />
+            <CategoryCheckboxList
+              key={1}
+              categoryListArray={categories}
+              onSelectedCategoriesChange={handleSelectedCategoriesChange}
+            />
+          </Box>
+        </Grid>
         <Grid
           item
           xs={12}

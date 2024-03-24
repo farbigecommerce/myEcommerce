@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Modal,
   Typography,
@@ -23,10 +23,16 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import AddShoppingCart from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+
+import { addToCart } from "../../reducer/Cart/CartActions";
+import { useDispatch } from "react-redux";
+import { productDetail,productList } from "../../reducer/Products/ProdActions";
+
 
 const protocol = window.location.protocol; // Get the current protocol
 const backend_domain = `${protocol}//${window.location.hostname}:8000`;
@@ -36,31 +42,67 @@ function ProductDetailModal({
   isAuthenticated,
   onCloseModal,
   cartItems,
+  product_detail,
 }) {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [productState, setProductState] = useState(product);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const imagesRef = useRef(null);
   const [num, setNum] = useState(1); // Initial value for num
 
-  React.useEffect(() => {
-    if (product) {
+
+   useEffect(() => {
+    setProductState(product);
+  }, [product]);
+  const handleSubmitAddToCart = async (e) => {
+    e.preventDefault();
+    try {
+      // Get the ID of the selected variation
+      const selectedVariantId = productState.variations[selectedVariantIndex].id;
+      // Dispatch addToCart action with the selected variation ID and quantity (num)
+      await dispatch(addToCart(selectedVariantId, num));
+      await dispatch(productDetail(productState.id))
+      // onCloseModal(); // Close modal after adding to cart
+    } catch (error) {
+      console.error("There was an error trying to add to cart this item.");
+    }
+  };
+
+  const formatCurrency = (number) => {
+    // Function to format numbers as currency with commas and decimals
+    return new Intl.NumberFormat("es-AR", {
+      style: "currency",
+      currency: "ARS", // Replace with your desired currency code
+    }).format(number);
+  };
+
+  useEffect(() => {
+    if (productState) {
       setOpen(true);
     } else {
       setOpen(false);
     }
-  }, [product]);
+  }, [productState]);
 
-  // Function to count the number of a particular variant in the cart
+  useEffect(() => {
+    setProductState(product_detail?.data)
+  }, [product_detail]);
+
   const countVariantInCart = (variantIndex) => {
-    const variantName = product.variations[variantIndex].name;
-    let count = 0;
-    cartItems.forEach((item) => {
-      if (item.product_variation.name === variantName) {
-        count += item.quantity;
-      }
-    });
-    return count;
+    if (productState && productState.variations) {
+      const variantName = productState.variations[variantIndex].name;
+      let count = 0;
+      cartItems.forEach((item) => {
+        if (item.product_variation.name === variantName) {
+          count += item.quantity;
+        }
+      });
+      return count;
+    } else {
+      return 0; // Return 0 if productState or productState.variations is null
+    }
   };
 
   const handleImageChange = (index) => {
@@ -98,10 +140,9 @@ function ProductDetailModal({
     const newVariant = parseInt(event.target.value);
     setSelectedVariantIndex(newVariant); // Update the selected variant index when radio button changes
     if (num > product.variations[newVariant].quantity) {
-      if (product.variations[newVariant].quantity > 1) { 
-      setNum(product.variations[newVariant].quantity);
-      }
-      else {
+      if (product.variations[newVariant].quantity > 1) {
+        setNum(product.variations[newVariant].quantity);
+      } else {
         setNum(1);
       }
     }
@@ -169,7 +210,7 @@ function ProductDetailModal({
                       maxHeight: "300px", // Change this value to adjust the height
                     }}
                   >
-                    {product && product.pictures && (
+                    {productState && productState.pictures && (
                       <>
                         <IconButton
                           sx={{
@@ -186,15 +227,15 @@ function ProductDetailModal({
                             handleImageChange(
                               (selectedImageIndex -
                                 1 +
-                                product.pictures.length) %
-                                product.pictures.length
+                                productState.pictures.length) %
+                                productState.pictures.length
                             )
                           }
                         >
                           <ChevronLeftIcon />
                         </IconButton>
                         <img
-                          src={`${backend_domain}${product.pictures[selectedImageIndex].image}`}
+                          src={`${backend_domain}${productState.pictures[selectedImageIndex].image}`}
                           alt={`Product ${selectedImageIndex + 1}`}
                           style={{
                             maxWidth: "100%",
@@ -216,7 +257,7 @@ function ProductDetailModal({
                           }}
                           onClick={() =>
                             handleImageChange(
-                              (selectedImageIndex + 1) % product.pictures.length
+                              (selectedImageIndex + 1) % productState.pictures.length
                             )
                           }
                         >
@@ -238,9 +279,9 @@ function ProductDetailModal({
                       width: "100%", // Ensure full width of the container
                     }}
                   >
-                    {product &&
-                      product.pictures &&
-                      product.pictures.map((picture, index) => (
+                    {productState &&
+                      productState.pictures &&
+                      productState.pictures.map((picture, index) => (
                         <div
                           key={index}
                           style={{ flex: "0 0 auto", marginRight: "8px" }}
@@ -268,22 +309,22 @@ function ProductDetailModal({
               </Grid>
             </Grid>
             <Grid item xs={12} md={6}>
-              {product && product.name && (
+              {productState && productState.name && (
                 <Box sx={{ mt: { xs: 0, md: 1 } }}>
                   <Typography variant="h6" component="h2">
-                    {product.name}
+                    {productState.name}
                   </Typography>
                 </Box>
               )}
-              {product && product.description && (
-                <Typography sx={{ mt: 1 }}>{product.description}</Typography>
+              {productState && productState.description && (
+                <Typography sx={{ mt: 1 }}>{productState.description}</Typography>
               )}
-              {product && product.variations && (
+              {productState && productState.variations && (
                 <Box sx={{ mt: 2 }}>
-                  {product.variations[selectedVariantIndex] && (
+                  {productState.variations[selectedVariantIndex] && (
                     <Box sx={{ mt: 1 }}>
                       <Typography variant="body2">Elige uno:</Typography>
-                      {product.variations.map((variation, index) => (
+                      {productState.variations.map((variation, index) => (
                         <div key={index}>
                           {" "}
                           {/* Add a parent div to encapsulate the RadioGroup and FormHelperText */}
@@ -313,7 +354,7 @@ function ProductDetailModal({
                         justifyContent="space-evenly"
                         sx={{ my: 1 }}
                       >
-                        {product.variations[selectedVariantIndex].prices[0] && (
+                        {productState.variations[selectedVariantIndex].prices[0] && (
                           <Grid item>
                             <Typography
                               sx={{
@@ -325,16 +366,15 @@ function ProductDetailModal({
                                 marginRight: 3,
                               }}
                             >
-                              ${" "}
-                              {
-                                product.variations[selectedVariantIndex]
+                              {formatCurrency(
+                                productState.variations[selectedVariantIndex]
                                   .prices[0].price
-                              }
+                              )}
                             </Typography>
                           </Grid>
                         )}
 
-                        {product.variations[selectedVariantIndex]
+                        {productState.variations[selectedVariantIndex]
                           .is_available && isAuthenticated ? (
                           <>
                             <Grid item>
@@ -367,6 +407,7 @@ function ProductDetailModal({
                               <Button
                                 size="small"
                                 sx={{ p: 1, color: "#f9a825" }}
+                                onClick={handleSubmitAddToCart} // Modificar aquí
                               >
                                 <AddShoppingCart sx={{ mr: 1 }} /> AGREGAR{" "}
                               </Button>
@@ -374,7 +415,7 @@ function ProductDetailModal({
                           </>
                         ) : (
                           <Grid item sx={{ ml: 2 }}>
-                            {!product.variations[selectedVariantIndex]
+                            {!productState.variations[selectedVariantIndex]
                               .is_available ? (
                               <Typography
                                 variant="body2"
@@ -412,7 +453,7 @@ function ProductDetailModal({
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {product.variations[
+                              {productState.variations[
                                 selectedVariantIndex
                               ].attributes.map((attribute, attrIndex) => (
                                 <TableRow
@@ -447,4 +488,10 @@ function ProductDetailModal({
   );
 }
 
-export default ProductDetailModal;
+const mapStateToProps = (state) => {
+  return {
+    product_detail: state.ProdReducer.product_detail
+  };
+};
+
+export default connect(mapStateToProps)(ProductDetailModal);

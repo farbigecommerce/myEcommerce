@@ -6,7 +6,7 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 const protocol = window.location.protocol; // Get the current protocol
 const backend_domain = `${protocol}//${window.location.hostname}:8000`;
 
-function ProductCard({ product, onSelectProduct }) {
+function ProductCard({ product=null, onSelectProduct=null }) {
   const cardStyle = {
     position: "relative",
     transition: "transform 0.5s",

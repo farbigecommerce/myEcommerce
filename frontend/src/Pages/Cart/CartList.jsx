@@ -61,7 +61,9 @@ function CartList({ isAuthenticated, cartItems, subtotal }) {
       </Grid>
 
       <Grid container>
-        <Grid item xs={12} md={8} sx={{ pl: 2, pr: { xs: 2, md: 0 } }}>
+        <Grid item xs={12}
+          md={9}
+          lg={8} sx={{ pl: 2, pr: { xs: 2, md: 0 } }}>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
@@ -121,7 +123,7 @@ function CartList({ isAuthenticated, cartItems, subtotal }) {
         <Grid
           item
           xs={12}
-          sm={12}
+          md={12}
           sx={{ textAlign: "right", display: { xs: "block", sm: "none" } }}
         >
           <Typography variant="h6" sx={{ pr: 2, my: 2 }}>
@@ -131,7 +133,8 @@ function CartList({ isAuthenticated, cartItems, subtotal }) {
         <Grid
           item
           xs={12}
-          md={4}
+          md={3}
+          lg={4}
           sx={{ px: { xs: 2, sm: 2 }, pt: { xs: 2, md: 0 }, mb: 3 }}
         >
           <Card>

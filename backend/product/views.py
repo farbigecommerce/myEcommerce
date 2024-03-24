@@ -1,12 +1,16 @@
 from rest_framework.pagination import PageNumberPagination
-from rest_framework import generics
+from rest_framework import generics, status
 from .models import Product
 from .serializers import ProductSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.db.models import Q
-
+from django.http import Http404
 import time
+from rest_framework.views import APIView
+from .models import Category
+from .serializers import CategoryListSerializer
+
 
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductSerializer
@@ -61,9 +65,6 @@ class ProductListView(generics.ListAPIView):
         return Response(serializer.data)
 
 
-from rest_framework.views import APIView
-from .models import Category
-from .serializers import CategoryListSerializer
 
 class CategoryList(APIView):
     def get(self, request):
@@ -78,3 +79,34 @@ class CategoryList(APIView):
             category['subcategories'] = subcategory_data
         
         return Response(serialized_data)
+
+
+class ProductDetailView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'pk'
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            if instance is None:
+                raise Http404("Product does not exist")
+            
+            serializer = self.get_serializer(instance, context={'user': request.user})
+            return Response({
+                'success': True,
+                'message': 'Product retrieved successfully',
+                'data': serializer.data
+            }, status=status.HTTP_200_OK)
+        except Http404 as e:
+            return Response({
+                'success': False,
+                'message': 'Product not found'
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': 'An error occurred while retrieving the product',
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

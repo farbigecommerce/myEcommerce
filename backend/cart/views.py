@@ -62,7 +62,19 @@ class AddCartItem(APIView):
             else:
                 self.update_quantity(cart_item, new_quantity)
                 serializer = CartItemSerializer(cart_item)
-                return Response(serializer.data)
+                cart_items = CartItem.objects.filter(cart__user=request.user, is_deleted=False)
+                serializer = CartItemListSerializer(cart_items, many=True)
+
+                # Calculate subtotal
+                subtotal = sum(item['total_price'] for item in serializer.data if item['is_selected'])
+
+                # Create a dictionary to hold both cart items and subtotal
+                response_data = {
+                    'cart_items': serializer.data,
+                    'subtotal': subtotal
+                }
+
+                return Response(response_data)
         
         else:
             # Create a new cart item

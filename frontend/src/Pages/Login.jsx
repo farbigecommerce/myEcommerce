@@ -52,7 +52,7 @@ const Login = ({ login,redirect_view, isAuthenticated,responseType, payload }) =
   }
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container sx={{pt:{xs:7,sm:8,md:9,}}} component="main" maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{

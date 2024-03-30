@@ -9,6 +9,8 @@ import Button from "@mui/material/Button";
 import CartItemList from "../../Component/Cart/CartItemList";
 import OrderSummary from "../../Component/Cart/OrderSummary";
 import { Paper } from "@mui/material";
+import CheckoutStepper from "../../Component/Cart/CheckoutStepper";
+import EastIcon from "@mui/icons-material/East";
 
 const CartList = () => {
   const navigate = useNavigate();
@@ -65,22 +67,8 @@ const CartList = () => {
       <Grid sx={{ pt: { xs: 7, sm: 8, md: 9 } }} container alignItems="center">
         <Grid item xs={12} sm={6}>
           <Typography variant="h4" sx={{ pl: 2, my: 2 }}>
-            Shopping Cart
+            Carrito
           </Typography>
-        </Grid>
-        <Grid
-          item
-          xs={false}
-          sm={6}
-          sx={{ textAlign: "right", display: { xs: "none", sm: "block" } }}
-        >
-          {cartItems.length === 0 ? (
-            <></>
-          ) : (
-            <Typography variant="h6" sx={{ pr: 2, my: 2 }}>
-              Total Products: {cartItems.length}
-            </Typography>
-          )}
         </Grid>
       </Grid>
 
@@ -88,20 +76,24 @@ const CartList = () => {
         emptyCartContent
       ) : (
         <Grid container>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              my: { xs: 1, md: 2 },
+              mb: { xs: 2, md: 4 },
+              mx: { xs: 2, md: 4 },
+            }}
+          >
+            <CheckoutStepper step={0}></CheckoutStepper>
+          </Grid>
           <Grid item xs={12} md={9} lg={8} sx={{ pl: 2, pr: { xs: 2, md: 0 } }}>
             <CartItemList
               cartItems={cartItems}
               formatCurrency={formatCurrency}
             />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={12}
-            sx={{ textAlign: "right", display: { xs: "block", sm: "none" } }}
-          >
-            <Typography variant="h6" sx={{ pr: 2, my: 2 }}>
-              Total Products: {cartItems.length}
+            <Typography variant="h6" sx={{ textAlign: "right", pr: 2, my: 2 }}>
+              Cantidad Total: {cartItems.length}
             </Typography>
           </Grid>
           <Grid
@@ -112,6 +104,19 @@ const CartList = () => {
             sx={{ px: { xs: 2, sm: 2 }, pt: { xs: 2, md: 0 }, mb: 3 }}
           >
             <OrderSummary subtotal={subtotal} formatCurrency={formatCurrency} />
+            <Link to="/cart/confirmation/">
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{
+                  mt: 2,
+                  width: "100%", // Stretch button to container width
+                }}
+                endIcon={<EastIcon />}
+              >
+                SIGUIENTE
+              </Button>
+            </Link>
           </Grid>
         </Grid>
       )}

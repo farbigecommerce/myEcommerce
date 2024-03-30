@@ -30,6 +30,23 @@ const CartReducer = (state = initialState, action) => {
         ...state,
         items: payload,
       };
+
+    case TYPE.REMOVE_FROM_CART_SUCCESS:
+      return {
+        ...state,
+      };
+    case TYPE.REMOVE_FROM_CART_FAIL:
+      return {
+        ...state,
+      };
+    case TYPE.UPDATE_CART_ITEM_SUCCESS:
+      return {
+        ...state,
+      };
+    case TYPE.UPDATE_CART_ITEM_FAIL:
+      return {
+        ...state,
+      };
     default:
       return state;
   }

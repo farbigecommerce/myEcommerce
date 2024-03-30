@@ -13,6 +13,7 @@ import "./css/main.css";
 import { Provider } from "react-redux";
 import Store from "./Store";
 import CartList from "./Pages/Cart/CartList";
+import InfoConfirmationPage from "./Pages/Cart/InfoConfirmationPage";
 
 const App = () => {
   return (
@@ -36,6 +37,8 @@ const App = () => {
 
             {/* Cart */}
             <Route path="cart/" element={<CartList />} />
+            <Route path="cart/confirmation/" element={<InfoConfirmationPage />} />
+            <Route path="cart/payment/" element={<CartList />} />
 
           </Routes>
         </Layout>

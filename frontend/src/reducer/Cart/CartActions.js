@@ -61,15 +61,15 @@ export const updateCartItem = (itemId, updateData) => async (dispatch) => {
   };
 
   try {
-    const res = await axios.patch(`${API_DOMAIN}/cart/update/${itemId}/`, updateData, config);
+    const res = await axios.put(`${API_DOMAIN}/cart/update/${itemId}/`, updateData, config);
     dispatch({
       type: TYPE.UPDATE_CART_ITEM_SUCCESS,
-      payload: res.data,
+      // payload: res.data,
     });
   } catch (err) {
     dispatch({
       type: TYPE.UPDATE_CART_ITEM_FAIL,
-      payload: err.response.data,
+      // payload: err.response.data,
     });
   }
 };
@@ -81,17 +81,16 @@ export const removeFromCart = (itemId) => async (dispatch) => {
       Authorization: `Bearer ${localStorage.getItem("access")}`,
     },
   };
-
   try {
-    await axios.delete(`${API_DOMAIN}/cart/delete/${itemId}/`, config);
+    await axios.post(`${API_DOMAIN}/cart/delete/${itemId}/`, config);
     dispatch({
       type: TYPE.REMOVE_FROM_CART_SUCCESS,
-      payload: itemId,
+      // payload: itemId,
     });
   } catch (err) {
     dispatch({
       type: TYPE.REMOVE_FROM_CART_FAIL,
-      payload: err.response.data,
+      // payload: err.response.data,
     });
   }
 };

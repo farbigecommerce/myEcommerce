@@ -153,7 +153,7 @@ class UpdateCartItem(APIView):
 class DeleteCartItem(APIView):
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request, pk):
+    def post(self, request, pk):
         try:
             cart_item = CartItem.objects.get(pk=pk)
         except CartItem.DoesNotExist:

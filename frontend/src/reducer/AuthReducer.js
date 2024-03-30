@@ -64,8 +64,8 @@ const AuthReducer = (state=initialState, action) => {
                 ...state,
                 access: payload.access,
                 isAuthenticated: true,
-                message: "Refresh token success",
-                type:"info",
+                // message: "Refresh token success",
+                // type:"info",
 
             }
         case TYPE.REFRESH_FAIL:
@@ -75,7 +75,7 @@ const AuthReducer = (state=initialState, action) => {
                 access: null,
                 isAuthenticated: false,
                 user: null,
-                message: "Refresh token fail"
+                // message: "Refresh token fail"
             }
         case TYPE.CHANGE_PASSWORD_SUCCESS:
             return {

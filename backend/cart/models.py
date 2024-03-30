@@ -43,3 +43,17 @@ class CartItem(models.Model):
                                                           start_date__lte=today,
                                                           end_date__gte=today)
         return available_prices.exists()
+
+class DeliveryInformation(models.Model):
+    user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100)
+    province = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    address = models.CharField(max_length=255)
+    apartment = models.CharField(max_length=50, blank=True, null=True)
+    other_info = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"Delivery information for user {self.user.email}"

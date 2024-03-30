@@ -179,6 +179,7 @@ function ProductDetailModal({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          overflow: "hidden", // Hide scrollbar
         }}
       >
         <Box
@@ -406,7 +407,7 @@ function ProductDetailModal({
                         container
                         alignItems="center"
                         justifyContent="space-evenly"
-                        sx={{ my:{xs:2,md:2} }}
+                        sx={{ my: { xs: 2, md: 2 } }}
                       >
                         {productState.variations[selectedVariantIndex]
                           .prices[0] && (
@@ -458,10 +459,10 @@ function ProductDetailModal({
                                 </Button>
                               </ButtonGroup>
                             </Grid>
-                            <Grid item sx={{ ml:0 }}>
+                            <Grid item sx={{ ml: 0 }}>
                               <Button
                                 size="small"
-                                sx={{ p: 1, color: "#f9a825", }}
+                                sx={{ p: 1, color: "#f9a825" }}
                                 onClick={handleSubmitAddToCart} // Modificar aquí
                               >
                                 <AddShoppingCart sx={{ mr: 1 }} /> AGREGAR{" "}

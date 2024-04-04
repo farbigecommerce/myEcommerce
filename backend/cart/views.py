@@ -7,6 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from .models import CartItem
 from .serializers import CartItemSerializer,CartItemListSerializer
 from product.models import ProductVariation, VariationPrice
+from .models import DeliveryInformation
+from .serializers import DeliveryInformationSerializer
+from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 
 from datetime import date
 
@@ -171,3 +174,58 @@ class DeleteCartItem(APIView):
         cart_item.quantity = 0
         cart_item.save()
         return Response({'success': 'Cart item deleted'},status=status.HTTP_204_NO_CONTENT)
+
+
+
+class ListDeliveryInformation(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = DeliveryInformationSerializer
+
+    def get_queryset(self):
+        return DeliveryInformation.objects.filter(user=self.request.user)
+
+
+class CreateDeliveryInformation(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = DeliveryInformationSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        # Set all existing delivery information for the user to False
+        DeliveryInformation.objects.filter(user=user).update(is_selected=False)
+        # Save the new delivery information with is_selected set to True
+        instance = serializer.save(user=user)
+        # Mark the newly created delivery information as selected
+        instance.is_selected = True
+        instance.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+class SelectDeliveryInformation(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, address_id):
+        user = request.user
+        try:
+            # Set all existing delivery information for the user to False
+            DeliveryInformation.objects.filter(user=user).update(is_selected=False)
+            # Select the specified delivery information by address_id
+            address = DeliveryInformation.objects.get(user=user, id=address_id)
+            address.is_selected = True
+            address.save()
+            return Response(status=status.HTTP_200_OK)
+        except DeliveryInformation.DoesNotExist:
+            return Response("Address not found", status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DeleteDeliveryInformation(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = DeliveryInformation.objects.all()
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response({'error': 'You are not allowed to delete this information'}, status=status.HTTP_403_FORBIDDEN)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

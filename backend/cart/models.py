@@ -45,7 +45,7 @@ class CartItem(models.Model):
         return available_prices.exists()
 
 class DeliveryInformation(models.Model):
-    user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100)
     province = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
@@ -54,6 +54,7 @@ class DeliveryInformation(models.Model):
     apartment = models.CharField(max_length=50, blank=True, null=True)
     other_info = models.CharField(max_length=255, blank=True, null=True)
     phone_number = models.CharField(max_length=20)
+    is_selected = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Delivery information for user {self.user.email}"

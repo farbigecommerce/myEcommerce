@@ -3,6 +3,7 @@ import TYPE from "./CartType";
 const initialState = {
   items: [],
   subtotal: null,
+  addresses: [],
 };
 
 const CartReducer = (state = initialState, action) => {
@@ -44,6 +45,42 @@ const CartReducer = (state = initialState, action) => {
         ...state,
       };
     case TYPE.UPDATE_CART_ITEM_FAIL:
+      return {
+        ...state,
+      };
+    case TYPE.ADDRESSES_SUCCESS:
+      return {
+        ...state,
+        addresses: payload,
+      };
+    case TYPE.ADDRESSES_FAIL:
+      return {
+        ...state,
+      };
+    case TYPE.ADD_ADDRESS_SUCCESS:
+      return {
+        ...state,
+        // addresses: payload,
+      };
+    case TYPE.ADD_ADDRESS_FAIL:
+      return {
+        ...state,
+      };
+    case TYPE.SELECT_ADDRESS_SUCCESS:
+      return {
+        ...state,
+        // addresses: payload,
+      };
+    case TYPE.SELECT_ADDRESS_FAIL:
+      return {
+        ...state,
+      };
+    case TYPE.REMOVE_ADDRESS_SUCCESS:
+      return {
+        ...state,
+        // addresses: payload,
+      };
+    case TYPE.REMOVE_ADDRESS_FAIL:
       return {
         ...state,
       };

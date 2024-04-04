@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
-import CartItemList from "../../Component/Cart/CartItemList";
+import CartItemList from "../../Component/Cart/Step1/CartItemList";
 import OrderSummary from "../../Component/Cart/OrderSummary";
 import { Paper } from "@mui/material";
 import CheckoutStepper from "../../Component/Cart/CheckoutStepper";

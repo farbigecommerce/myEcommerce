@@ -61,15 +61,13 @@ export const updateCartItem = (itemId, updateData) => async (dispatch) => {
   };
 
   try {
-    const res = await axios.put(`${API_DOMAIN}/cart/update/${itemId}/`, updateData, config);
+    await axios.put(`${API_DOMAIN}/cart/update/${itemId}/`, updateData, config);
     dispatch({
       type: TYPE.UPDATE_CART_ITEM_SUCCESS,
-      // payload: res.data,
     });
   } catch (err) {
     dispatch({
       type: TYPE.UPDATE_CART_ITEM_FAIL,
-      // payload: err.response.data,
     });
   }
 };
@@ -91,6 +89,48 @@ export const removeFromCart = (itemId) => async (dispatch) => {
     dispatch({
       type: TYPE.REMOVE_FROM_CART_FAIL,
       // payload: err.response.data,
+    });
+  }
+};
+
+export const addressesList = () => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("access")}`,
+    },
+  };
+  try {
+    const res = await axios.get(`${API_DOMAIN}/cart/delivery/`, config);
+    dispatch({
+      type: TYPE.ADDRESSES_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPE.ADDRESSES_FAIL,
+      payload: err.response.data,
+    });
+  }
+};
+
+export const removeAddress = (deliveryId) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("access")}`,
+    },
+  };
+  try {
+    const res = await axios.get(`${API_DOMAIN}/cart/delivery/delete/${deliveryId}/`, config);
+    dispatch({
+      type: TYPE.ADDRESSES_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPE.ADDRESSES_FAIL,
+      payload: err.response.data,
     });
   }
 };

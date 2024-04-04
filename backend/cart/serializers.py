@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CartItem
+from .models import CartItem, DeliveryInformation
 from product.models import Product, ProductVariation, Picture, VariationPrice, Category, PriceUnit, Attribute
 from datetime import date
 
@@ -104,3 +104,13 @@ class CartItemListSerializer(serializers.ModelSerializer):
             obj.save()
             return False
         return True
+
+
+class DeliveryInformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeliveryInformation
+        fields = '__all__'
+        extra_kwargs = {
+            'user': {'required': False}
+        }
+

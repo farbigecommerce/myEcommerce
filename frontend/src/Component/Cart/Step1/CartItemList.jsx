@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { } from "react";
 import { useDispatch } from "react-redux";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Grid, Stack, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -21,7 +21,7 @@ import {
   removeFromCart,
   cartList,
   updateCartItem,
-} from "../../reducer/Cart/CartActions";
+} from "../../../reducer/Cart/CartActions";
 import { useSelector } from "react-redux";
 
 const protocol = window.location.protocol;
@@ -173,7 +173,7 @@ const CartItemList = ({ formatCurrency }) => {
                               item.product_variation.quantity === item.quantity
                                 ? true
                                 : false
-                            } // Disable the button if item.product_variation.quantity is equal to item.quantity or if X is true
+                            }
                           >
                             <AddIcon sx={{ fontSize: 16 }} />
                           </Button>

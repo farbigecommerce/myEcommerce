@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 
-const OrderSummary = ({ subtotal, formatCurrency }) => {
+const OrderSummary = ({ subtotal, envio, formatCurrency }) => {
   return (
     <Card sx={{ backgroundColor: "#1e88e5" }}>
       <List dense={true}>
@@ -35,21 +35,25 @@ const OrderSummary = ({ subtotal, formatCurrency }) => {
             secondary={formatCurrency(subtotal)}
           />
         </ListItem>
-        {/* <Divider />
-        <ListItem
-          sx={{
-            backgroundColor: "white", // Background color
-          }}
-        >
-          <ListItemText primary="Envío" secondary={formatCurrency(5000)} />
-        </ListItem> */}
+        {envio !== undefined && (
+          <>
+            <Divider />
+            <ListItem
+              sx={{
+                backgroundColor: "white", // Background color
+              }}
+            >
+              <ListItemText primary="Envío" secondary={formatCurrency(envio)} />
+            </ListItem>
+          </>
+        )}
         <Divider />
         <Typography
-          sx={{ m: 1, ml: 2, mt: 2, fontWeight: 550,color:"white" }}
+          sx={{ m: 1, ml: 2, mt: 2, fontWeight: 550, color: "white" }}
           variant="body1"
           component="div"
         >
-          Total: {formatCurrency(subtotal + 5000)}
+          Total: {formatCurrency(subtotal + (envio ? envio : 0))}
         </Typography>
       </List>
     </Card>
